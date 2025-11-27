@@ -7,7 +7,7 @@ export default function Home() {
   const [phone, setPhone] = useState<string>('');
   const [amount, setAmount] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-  const [status, setStatus] = useState<string>(''); // Blank by default
+  const [status, setStatus] = useState<string>('');
   const [receipt, setReceipt] = useState<string>('');
 
   const startPolling = (checkoutRequestID: string) => {
@@ -22,11 +22,11 @@ export default function Home() {
           setLoading(false);
           clearInterval(interval);
 
-          // Auto-reset after 5 seconds
           setTimeout(() => {
             setReceipt('');
             setStatus('');
             setPhone('');
+            setAmount('');
           }, 5000);
 
         } else if (data.status === 'FAILED') {
@@ -45,13 +45,19 @@ export default function Home() {
   };
 
   const handlePay = async () => {
-    if (!phone) return; // Don't alert, just do nothing if empty
+    if (!phone) return alert("Please enter a phone number");
+    if (!amount) return alert("Please enter an amount");
+
     setLoading(true);
-    setStatus('📲 Check your phone enter the PIN...');
+    setStatus('📲 Check your phone for the PIN...');
     setReceipt('');
 
     try {
-      const res = await axios.post('/api/stkpush', { phone, amount: 1 });
+      const res = await axios.post('/api/stkpush', { 
+        phone, 
+        amount: amount 
+      });
+      
       const checkoutRequestID = res.data.CheckoutRequestID;
       startPolling(checkoutRequestID);
     } catch (error) {
@@ -64,16 +70,13 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gray-50 flex items-center justify-center p-4 font-sans">
       
-      {/* The Card Container */}
       <div className="bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden transition-all duration-300">
         
-        {/* Header Section */}
         <div className="bg-emerald-600 p-6 text-center">
           <h1 className="text-white text-2xl font-bold tracking-tight">Web Hakikisha</h1>
           <p className="text-emerald-100 text-sm mt-1">Secure M-PESA Checkout</p>
         </div>
 
-        {/* Body Section */}
         <div className="p-8">
           
           {receipt ? (
@@ -85,7 +88,9 @@ export default function Home() {
                 </svg>
               </div>
               <h2 className="text-2xl font-bold text-gray-800 mb-2">Payment Received</h2>
-              <p className="text-gray-500 mb-6">Receipt: <span className="font-mono text-gray-800">{receipt}</span></p>
+              <p className="text-gray-500 mb-1">Receipt: <span className="font-mono text-gray-800">{receipt}</span></p>
+              <p className="text-gray-500 mb-6">Amount: <span className="font-bold text-gray-800">KES {amount}</span></p>
+              
               <div className="w-full bg-gray-100 rounded-lg p-3 text-center text-sm text-gray-500">
                 Resetting in 5 seconds...
               </div>
@@ -94,28 +99,35 @@ export default function Home() {
             /* PAYMENT FORM STATE */
             <div className="flex flex-col gap-6">
               
-              {/* Price Display */}
-              <div className="text-center">
-                <span className="text-gray-400 text-sm uppercase font-semibold">Total to Pay</span>
-                <div className="text-4xl font-extrabold text-gray-800 mt-1">
-                  <span className="text-2xl align-top text-gray-500">KES</span> 1.00
+              {/* Amount Input */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Amount to Pay (KES)</label>
+                <div className="relative">
+                  <input 
+                    type="number" 
+                    placeholder="e.g. 500" 
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    disabled={loading}
+                    className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-gray-800 placeholder-gray-400 text-lg font-bold"
+                  />
                 </div>
               </div>
 
               {/* Phone Input */}
               <div>
-                {/* NEW: Amount Input */}
-<div>
-  <label className="block text-sm font-medium text-gray-700 mb-2">Amount to Pay (KES)</label>
-  <div className="relative">
-    <input 
-      type="number" 
-      placeholder="e.g. 500" 
-      value={amount}
-      onChange={(e) => setAmount(e.target.value)}
-      // ...
-    />
-  </div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">M-PESA Number</label>
+                <div className="relative">
+                  <input 
+                    type="text" 
+                    placeholder="2547XXXXXXXX" 
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    disabled={loading}
+                    className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-gray-800 placeholder-gray-400 text-lg"
+                  />
+                </div>
+              </div>
 
               {/* Pay Button */}
               <button 
@@ -135,7 +147,7 @@ export default function Home() {
                     </svg>
                     Processing...
                   </span>
-                ) : 'Pay Now'}
+                ) : `Pay KES ${amount || '...'}`}
               </button>
 
               {/* Status Text */}
@@ -148,7 +160,6 @@ export default function Home() {
           )}
         </div>
         
-        {/* Footer */}
         <div className="bg-gray-50 p-4 text-center border-t border-gray-100">
           <p className="text-xs text-gray-400">Powered by Project Hakikisha & Safaricom</p>
         </div>
