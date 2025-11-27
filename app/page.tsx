@@ -23,6 +23,12 @@ export default function Home() {
           setReceipt(data.receipt);
           setLoading(false);
           clearInterval(interval); // Stop checking
+          setTimeout(() => {
+            setReceipt('');
+            setStatus('Ready to pay');
+            setPhone('');
+          }, 5000);
+          
         } else if (data.status === 'FAILED') {
           setStatus('❌ Payment Failed / Cancelled');
           setLoading(false);
