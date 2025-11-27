@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import axios from 'axios';
-import { paymentStore } from '../../../lib/store'; // (Or remove if using Redis exclusively now)
 
 export async function POST(req) {
   const { phone, amount } = await req.json();
