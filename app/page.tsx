@@ -104,18 +104,18 @@ export default function Home() {
 
               {/* Phone Input */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">M-PESA Number</label>
-                <div className="relative">
-                  <input 
-                    type="text" 
-                    placeholder="2547XXXXXXXX" 
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    disabled={loading}
-                    className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-gray-800 placeholder-gray-400 text-lg"
-                  />
-                </div>
-              </div>
+                {/* NEW: Amount Input */}
+<div>
+  <label className="block text-sm font-medium text-gray-700 mb-2">Amount to Pay (KES)</label>
+  <div className="relative">
+    <input 
+      type="number" 
+      placeholder="e.g. 500" 
+      value={amount}
+      onChange={(e) => setAmount(e.target.value)}
+      // ...
+    />
+  </div>
 
               {/* Pay Button */}
               <button 
