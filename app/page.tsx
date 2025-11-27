@@ -5,6 +5,7 @@ import axios from 'axios';
 
 export default function Home() {
   const [phone, setPhone] = useState<string>('');
+  const [amount, setAmount] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [status, setStatus] = useState<string>(''); // Blank by default
   const [receipt, setReceipt] = useState<string>('');
