@@ -46,7 +46,7 @@ export default function Home() {
   const handlePay = async () => {
     if (!phone) return; // Don't alert, just do nothing if empty
     setLoading(true);
-    setStatus('📲 Check your phone for the PIN...');
+    setStatus('📲 Check your phone enter the PIN...');
     setReceipt('');
 
     try {
